@@ -61,7 +61,7 @@ const portfolioQuery = `{
 	}
 }`
 
-const indexName = `dev_ambulant-portfolio`
+const indexName = process.env.GATSBY_ALGOLIA_INDEX_NAME
 
 const flatten = arr =>
   arr.map(({ node: { frontmatter, ...rest } }) => ({
@@ -98,7 +98,7 @@ const queries = [
             path: `/${slug}`,
             ...rest,
           }
-        }
+        },
       ),
     indexName,
     settings,
@@ -123,7 +123,7 @@ const queries = [
             path: `/works/${slug}`,
             ...rest,
           }
-        }
+        },
       ),
     indexName,
     settings,
