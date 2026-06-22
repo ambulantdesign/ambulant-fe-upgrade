@@ -4,6 +4,40 @@
  * See: https://www.gatsbyjs.com/docs/ssr-apis/
  */
 const React = require("react")
+const { InstantSearch } = require("react-instantsearch")
+const algoliasearch = require("algoliasearch/lite")
+
+const searchClient = algoliasearch(
+  process.env.GATSBY_ALGOLIA_APP_ID,
+  process.env.GATSBY_ALGOLIA_SEARCH_KEY,
+)
+
+const routing = {
+  stateMapping: {
+    stateToRoute(uiState) {
+      const indexUiState = uiState["dev_ambulant-portfolio"] || {}
+      return { q: indexUiState.query }
+    },
+    routeToState(routeState) {
+      return {
+        "dev_ambulant-portfolio": {
+          query: routeState.q,
+        },
+      }
+    },
+  },
+}
+
+exports.wrapPageElement = ({ element, props }) => (
+  <InstantSearch
+    searchClient={searchClient}
+    indexName="dev_ambulant-portfolio"
+    routing={routing}
+    future={{ preserveSharedStateOnUnmount: true }}
+  >
+    {element}
+  </InstantSearch>
+)
 
 exports.onRenderBody = ({ setHtmlAttributes, setHeadComponents }) => {
   setHtmlAttributes({ lang: `en` })
