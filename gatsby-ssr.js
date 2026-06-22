@@ -5,31 +5,11 @@
  */
 const React = require("react")
 const { InstantSearch } = require("react-instantsearch")
-const algoliasearch = require("algoliasearch/lite")
-
-const indexName = process.env.GATSBY_ALGOLIA_INDEX_NAME
-
-const searchClient = algoliasearch(
-  process.env.GATSBY_ALGOLIA_APP_ID,
-  process.env.GATSBY_ALGOLIA_SEARCH_KEY,
-)
-
-const routing = {
-  stateMapping: {
-    stateToRoute(uiState) {
-      const indexUiState = uiState[indexName] || {}
-      return { q: indexUiState.query }
-    },
-    routeToState(routeState) {
-      return {
-        [indexName]: {
-          // eckige Klammern für computed property name
-          query: routeState.q,
-        },
-      }
-    },
-  },
-}
+const {
+  searchClient,
+  indexName,
+  routing,
+} = require("./src/utils/algolia-search-config")
 
 exports.wrapPageElement = ({ element, props }) => (
   <InstantSearch

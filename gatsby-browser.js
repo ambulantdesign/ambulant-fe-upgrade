@@ -6,33 +6,12 @@
 import React from "react"
 import { CtxProvider } from "./src/context/AppContext"
 import { InstantSearch } from "react-instantsearch"
-import algoliasearch from "algoliasearch/lite"
+import {
+  searchClient,
+  indexName,
+  routing,
+} from "./src/utils/algolia-search-config"
 require("./src/assets/css/global.css")
-
-const indexName = process.env.GATSBY_ALGOLIA_INDEX_NAME
-
-const searchClient = algoliasearch(
-  process.env.GATSBY_ALGOLIA_APP_ID,
-  process.env.GATSBY_ALGOLIA_SEARCH_KEY,
-)
-
-const routing = {
-  stateMapping: {
-    // Nur den "query"-Parameter in die URL schreiben, nicht den gesamten Suchstatus
-    stateToRoute(uiState) {
-      const indexUiState = uiState[indexName] || {}
-      return { q: indexUiState.query }
-    },
-    routeToState(routeState) {
-      return {
-        [indexName]: {
-          // eckige Klammern für computed property name
-          query: routeState.q,
-        },
-      }
-    },
-  },
-}
 
 export const wrapPageElement = ({ element, props }) => (
   <InstantSearch
