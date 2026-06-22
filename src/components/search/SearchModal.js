@@ -29,7 +29,7 @@ export default function SearchModal({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-gray-600/80 px-6 py-12"
+      className="fixed inset-0 z-[9999] flex items-start justify-center bg-gray-600/80 px-6 pt-16"
       role="dialog"
       aria-modal="true"
       aria-labelledby="search-modal-title"
