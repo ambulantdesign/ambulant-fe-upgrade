@@ -22,7 +22,8 @@ const routing = {
     },
     routeToState(routeState) {
       return {
-        indexName: {
+        [indexName]: {
+          // eckige Klammern für computed property name
           query: routeState.q,
         },
       }
