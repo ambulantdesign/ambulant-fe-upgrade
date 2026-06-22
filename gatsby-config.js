@@ -100,7 +100,7 @@ module.exports = {
     author: `Gabriele Franziska Götz`,
     authorShort: `Gabriele Götz`,
     jobDesc: `graphic designer`,
-    siteUrl: `${process.env.GATSBY_SITE_URL}`,
+    siteUrl: process.env.GATSBY_SITE_URL,
     phone: `+31206890280`,
     email: process.env.GATSBY_FORMIK_EMAIL,
     seo: {

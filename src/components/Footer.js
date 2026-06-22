@@ -66,7 +66,7 @@ const Footer = props => {
         <div className="title">Get in touch</div>
         <div className="content">
           <EmailLink
-            encodedEmail="aW5mb0BhbWJ1bGFudGRlc2lnbi5ubA=="
+            encodedEmail={process.env.GATSBY_FORMIK_EMAIL_ENCODED}
             title={`Send mail to ${siteTitle}`}
             ariaLabel={`Send mail to ${siteTitle}`}
           >
