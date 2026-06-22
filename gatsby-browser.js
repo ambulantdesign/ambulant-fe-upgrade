@@ -9,6 +9,8 @@ import { InstantSearch } from "react-instantsearch"
 import algoliasearch from "algoliasearch/lite"
 require("./src/assets/css/global.css")
 
+const indexName = process.env.GATSBY_ALGOLIA_INDEX_NAME
+
 const searchClient = algoliasearch(
   process.env.GATSBY_ALGOLIA_APP_ID,
   process.env.GATSBY_ALGOLIA_SEARCH_KEY,
@@ -18,12 +20,12 @@ const routing = {
   stateMapping: {
     // Nur den "query"-Parameter in die URL schreiben, nicht den gesamten Suchstatus
     stateToRoute(uiState) {
-      const indexUiState = uiState["dev_ambulant-portfolio"] || {}
+      const indexUiState = uiState[indexName] || {}
       return { q: indexUiState.query }
     },
     routeToState(routeState) {
       return {
-        "dev_ambulant-portfolio": {
+        indexName: {
           query: routeState.q,
         },
       }
@@ -34,7 +36,7 @@ const routing = {
 export const wrapPageElement = ({ element, props }) => (
   <InstantSearch
     searchClient={searchClient}
-    indexName="dev_ambulant-portfolio"
+    indexName={indexName}
     routing={routing}
     future={{ preserveSharedStateOnUnmount: true }}
   >
