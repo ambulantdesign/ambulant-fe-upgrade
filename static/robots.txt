@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /*.txt$
+Disallow: /*.md$
+Disallow: /search/
+Sitemap: https://ambulantdesign.nl/sitemap/sitemap-0.xml
