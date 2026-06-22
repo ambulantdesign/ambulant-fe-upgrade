@@ -29,21 +29,10 @@ const ContactOptions = ({ headline, extraClass }) => {
         <p>
           <EmailLink
             className="w-full text-center bg-transparent py-2 px-4 mr-4 border rounded inline-block nav-btn"
-            encodedEmail="aW5mb0BhbWJ1bGFudGRlc2lnbi5ubA=="
+            encodedEmail={process.env.GATSBY_FORMIK_EMAIL_ENCODED}
             title={`Send mail to ${title}`}
             ariaLabel={`Send mail to ${title}`}
           >
-            {/* <a
-              className="w-full text-center bg-transparent py-2 px-4 mr-4 border rounded inline-block nav-btn"
-              title={`Send mail to ${title}`}
-              href={`mailto:${email}`}
-              aria-label={`Send mail to ${title}`}
-            >
-              <span className="flex items-center justify-center">
-                <FaEnvelope />
-                <span className="pl-4">E-Mail</span>
-              </span>
-            </a> */}
             <span className="flex items-center justify-center">
               <FaEnvelope />
               <span className="pl-4">E-Mail</span>
