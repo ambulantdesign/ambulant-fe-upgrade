@@ -11,7 +11,7 @@ import WorkContentArchive from "../components/WorkContentArchive"
 
 import * as styles from "../assets/css/index.module.css"
 
-const WorkDetails = ({ data }) => {
+const WorkDetails = ({ location, data }) => {
   if (!data?.work)
     return (
       <>
@@ -66,10 +66,20 @@ const WorkDetails = ({ data }) => {
     allGalleries = gallery
   }
 
+  const isRedirected = location.state?.redirectedFromArtist === true
+
   return (
     <>
       <Layout currentArtistSlug={artist?.slug}>
         <Wrapper className={styles.portfolio} id="main">
+          {artist && !isRedirected && (
+            <Link
+              className="bg-transparent py-2 mb-4 inline-block nav-btn"
+              to={`/artists/${artist?.slug}`}
+            >
+              <span className="">← Back to {artist?.fullname}</span>
+            </Link>
+          )}
           {smallSlider ? (
             <WorkContentArchive
               data={data}

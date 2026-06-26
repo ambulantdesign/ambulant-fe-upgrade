@@ -82,7 +82,10 @@ const AlmListPage = ({ data, pageContext }) => {
     // programmatically navigate to detail page if there is only one work
     if (list.length === 1 && contentType === "artists") {
       const { slug } = projects[0]
-      navigate(`/works/${slug}`, { replace: true })
+      navigate(`/works/${slug}`, {
+        replace: true,
+        state: { redirectedFromArtist: true },
+      })
     }
     const isMore = list.length < projects.length
     setHasMore(isMore)
