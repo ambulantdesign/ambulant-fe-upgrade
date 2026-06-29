@@ -312,7 +312,11 @@ export const Head = ({ location, data, pageContext }) => {
 
   return (
     <>
-      <script src={withPrefix("/js/autoGrid.js")} type="text/javascript" />
+      <script
+        src={withPrefix("/js/autoGrid.js")}
+        type="text/javascript"
+        defer
+      />
       <Seo
         title={seoTitle}
         attachDefault={true}
