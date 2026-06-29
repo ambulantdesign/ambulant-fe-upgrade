@@ -14,6 +14,8 @@ import StreamingVideo from "../components/StreamingVideo"
 import ContactForm from "../components/ContactForm"
 import ContactOptions from "../components/ContactOptions"
 
+import "leaflet/dist/leaflet.css"
+
 const ContactPage = ({ data }) => {
   const {
     title,
