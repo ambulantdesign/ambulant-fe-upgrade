@@ -315,6 +315,7 @@ export const Head = ({ location, data, pageContext }) => {
       <script
         src={withPrefix("/js/autoGrid.js")}
         type="text/javascript"
+        rel="preload"
         defer
       />
       <Seo
