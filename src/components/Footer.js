@@ -163,31 +163,6 @@ const Wrapper = styled.footer`
     }
   }
   @media screen and (max-width: 900px) {
-    margin-right: 0;
-    .logo {
-      grid-column: span 5;
-      align-items: flex-start;
-    }
-    .logo > h1 {
-      flex-direction: column;
-      gap: 0;
-      align-items: flex-start;
-      width: 100%;
-    }
-    .logo > h1 span.authorName {
-      margin-left: 30px;
-    }
-    .info {
-      align-items: flex-start;
-    }
-    .imprint {
-      grid-column: span 3;
-    }
-    .email {
-      grid-column: span 4;
-    }
-  }
-  @media screen and (max-width: 720px) {
     /* Das 12-spaltige Raster hat 11 Zwischenraeume. Bei column-gap: 40px
 			sind das 440px allein fuer Abstaende — breiter als jedes Smartphone.
 			Ohne diese Zeile kollabieren alle Spalten auf 0px und der Footer
