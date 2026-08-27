@@ -29,7 +29,7 @@ const NormalSlider = ({ gallery }) => {
     }
   }
   const transitionEndHandler = swiper => {
-    if (isBrowser) {
+    if (isBrowser && typeof window.autoPlayVideo === "function") {
       window.autoPlayVideo(swiper.activeIndex)
     }
   }
@@ -56,6 +56,7 @@ const NormalSlider = ({ gallery }) => {
               localFile = null,
               isSliderVideo = null,
               sliderVideos = null,
+              sliderPoster = null,
             } = slide
             let media = null
             if (!isSliderVideo) {
@@ -77,7 +78,7 @@ const NormalSlider = ({ gallery }) => {
             } else {
               return (
                 <SwiperSlide key={id} virtualIndex={index}>
-                  <VideoEmbed videos={media} />
+                  <VideoEmbed videos={media} poster={sliderPoster} />
                 </SwiperSlide>
               )
             }
@@ -124,6 +125,27 @@ const Wrapper = styled.section`
     height: 100%;
     object-fit: cover;
   }
+  .swiper-slide .video-embed {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .video-embed__play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 68px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--clr-grey-3);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  .video-embed__play:hover {
+    opacity: 0.75;
+  }
   .swiper .swiper-button-next,
   .swiper-button-prev {
     transition: color 0.4s ease;
@@ -152,7 +174,8 @@ NormalSlider.propTypes = {
       localFile: PropTypes.object,
       isSliderVideo: PropTypes.bool,
       sliderVideos: PropTypes.arrayOf(PropTypes.shape({})),
-    })
+      sliderPoster: PropTypes.shape({ localFile: PropTypes.object }),
+    }),
   ),
 }
 
