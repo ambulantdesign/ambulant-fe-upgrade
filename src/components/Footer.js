@@ -229,6 +229,9 @@ const Wrapper = styled.footer`
       align-items: flex-start;
       gap: 2px;
     }
+    .logo > h1 span.authorName {
+      display: none;
+    }
     .imprint,
     .email {
       grid-column: span 12;
