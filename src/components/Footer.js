@@ -188,14 +188,27 @@ const Wrapper = styled.footer`
     }
   }
   @media screen and (max-width: 720px) {
+    /* Das 12-spaltige Raster hat 11 Zwischenraeume. Bei column-gap: 40px
+			sind das 440px allein fuer Abstaende — breiter als jedes Smartphone.
+			Ohne diese Zeile kollabieren alle Spalten auf 0px und der Footer
+			laeuft ueber den Viewport hinaus (gemessen: 48px Ueberlauf bei 412px). */
+
+    column-gap: 16px;
+
     .logo {
       grid-column: span 12;
       align-items: center;
     }
     .logo > h1 {
       flex-direction: row;
-      gap: 12px;
+      /* Umbruch erlauben: die beiden Namen brauchen zusammen 343px
+         Mindestbreite, auf einem iPhone SE stehen nur 335px zur Verfuegung. */
+      flex-wrap: wrap;
+      gap: 4px 12px;
       align-items: center;
+    }
+    .logo > h1 a {
+      white-space: normal;
     }
     .logo > h1 span.authorName {
       margin-left: 0;
@@ -205,6 +218,23 @@ const Wrapper = styled.footer`
     }
     .email {
       grid-column: span 6;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    column-gap: 0;
+
+    .logo > h1 {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .imprint,
+    .email {
+      grid-column: span 12;
+    }
+    .info.email {
+      justify-content: flex-start;
     }
   }
 `
