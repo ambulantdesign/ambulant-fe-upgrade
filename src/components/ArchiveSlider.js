@@ -19,6 +19,7 @@ const ArchiveSlider = ({ gallery }) => (
   <Wrapper className="archive mb-4" id="slider">
     <Swiper
       modules={[Lazy, Navigation, Pagination, Keyboard, Virtual]}
+      cssMode={true}
       spaceBetween={24}
       slidesPerView={1}
       lazy={true}
@@ -92,7 +93,7 @@ ArchiveSlider.propTypes = {
       caption: PropTypes.string,
       id: PropTypes.string.isRequired,
       localFile: PropTypes.object.isRequired,
-    })
+    }),
   ),
 }
 

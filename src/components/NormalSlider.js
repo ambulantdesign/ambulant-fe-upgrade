@@ -39,6 +39,7 @@ const NormalSlider = ({ gallery }) => {
       <Wrapper className="hero mb-12" id="slider">
         <Swiper
           modules={[Lazy, Navigation, Pagination, Keyboard]}
+          cssMode={true}
           spaceBetween={48}
           slidesPerView={1}
           lazy={true}
