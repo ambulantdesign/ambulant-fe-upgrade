@@ -11,7 +11,7 @@ import WorkContentArchive from "../components/WorkContentArchive"
 
 import * as styles from "../assets/css/index.module.css"
 
-const WorkDetails = ({ location, data }) => {
+const WorkDetails = ({ data, pageContext }) => {
   if (!data?.work)
     return (
       <>
@@ -47,32 +47,43 @@ const WorkDetails = ({ location, data }) => {
   let allGalleries = []
   let sliderVideos = []
   let extraVideos = []
+  let sliderPoster = null
 
   if (videos.length > 0) {
-    videos.map(video =>
-      video.addToSlider
-        ? sliderVideos.push(video.file)
-        : extraVideos.push(video.file),
-    )
+    videos.forEach(video => {
+      if (video.addToSlider) {
+        sliderVideos.push(video.file)
+        // Minimal-Variante: alle addToSlider-Eintraege landen in EINER Slide,
+        // also zaehlt das erste gepflegte Poster.
+        if (!sliderPoster && video.poster) sliderPoster = video.poster
+      } else {
+        extraVideos.push(video.file)
+      }
+    })
   }
   if (sliderVideos.length > 0) {
     const allSliderVideos = {
       id: sliderVideos[0].id,
       isSliderVideo: true,
       sliderVideos,
+      sliderPoster,
     }
     allGalleries = [allSliderVideos, ...gallery]
   } else {
     allGalleries = gallery
   }
 
-  const isRedirected = location.state?.redirectedFromArtist === true
+  // Der "Back to …"-Link darf nur erscheinen, wenn die Künstler:innen-Seite
+  // überhaupt existiert. Bei genau einer Arbeit gibt es sie nicht mehr —
+  // sie leitet per 301 auf genau diese Seite zurück (siehe gatsby-node.js).
+  const showBackToArtist =
+    Boolean(artist) && Boolean(pageContext?.artistHasMultipleWorks)
 
   return (
     <>
       <Layout currentArtistSlug={artist?.slug}>
         <Wrapper className={styles.portfolio} id="main">
-          {artist && !isRedirected && (
+          {showBackToArtist && (
             <Link
               className="bg-transparent py-2 mb-4 inline-block nav-btn"
               to={`/artists/${artist?.slug}`}
@@ -206,6 +217,13 @@ export const query = graphql`
           mime
           localFile {
             url
+          }
+        }
+        poster {
+          localFile {
+            childImageSharp {
+              gatsbyImageData(layout: CONSTRAINED, placeholder: BLURRED)
+            }
           }
         }
         addToSlider

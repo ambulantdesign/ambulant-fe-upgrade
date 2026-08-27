@@ -115,7 +115,63 @@ module.exports = {
     `gatsby-plugin-netlify`,
     `gatsby-plugin-postcss`,
     `gatsby-plugin-styled-components`,
-    `gatsby-plugin-sitemap`,
+    {
+      // Künstlerseiten mit genau einer Arbeit werden per 301 auf die
+      // Detailseite geleitet (siehe gatsby-node.js). Sie dürfen deshalb
+      // nicht in der Sitemap stehen — sonst bittet man Google um die
+      // Indexierung einer Seite, die sich selbst wegleitet.
+      resolve: `gatsby-plugin-sitemap`,
+      options: {
+        query: `
+          {
+            site {
+              siteMetadata {
+                siteUrl
+              }
+            }
+            allSitePage {
+              nodes {
+                path
+              }
+            }
+            allStrapiWork {
+              nodes {
+                slug
+                artist {
+                  slug
+                }
+              }
+            }
+          }
+        `,
+        resolveSiteUrl: ({ site }) =>
+          site.siteMetadata.siteUrl || process.env.GATSBY_SITE_URL,
+        resolvePages: ({ allSitePage, allStrapiWork }) => {
+          const withSlash = p => (p.endsWith("/") ? p : `${p}/`)
+
+          const workCountByArtist = new Map()
+          allStrapiWork.nodes.forEach(work => {
+            const artistSlug = work.artist?.slug
+            if (!artistSlug) return
+            workCountByArtist.set(
+              artistSlug,
+              (workCountByArtist.get(artistSlug) || 0) + 1,
+            )
+          })
+
+          const redirectedArtistPaths = new Set(
+            Array.from(workCountByArtist.entries())
+              .filter(([, count]) => count === 1)
+              .map(([slug]) => withSlash(`/artists/${slug}`)),
+          )
+
+          return allSitePage.nodes.filter(
+            page => !redirectedArtistPaths.has(withSlash(page.path)),
+          )
+        },
+        serialize: ({ path }) => ({ url: path }),
+      },
+    },
     {
       resolve: `gatsby-source-strapi`,
       options: strapiConfig,

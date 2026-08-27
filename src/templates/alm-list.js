@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useRef, useState, useEffect, useMemo } from "react"
-import { graphql, withPrefix, navigate } from "gatsby"
+import { graphql, withPrefix } from "gatsby"
 import styled from "styled-components"
 import { FaParagraph } from "react-icons/fa"
 
@@ -79,14 +79,10 @@ const AlmListPage = ({ data, pageContext }) => {
 
   // Check if there is more
   useEffect(() => {
-    // programmatically navigate to detail page if there is only one work
-    if (list.length === 1 && contentType === "artists") {
-      const { slug } = projects[0]
-      navigate(`/works/${slug}`, {
-        replace: true,
-        state: { redirectedFromArtist: true },
-      })
-    }
+    // Hinweis: Die frühere clientseitige Weiterleitung auf die Detailseite
+    // (bei genau einer Arbeit) ist entfallen. Google hat sie als
+    // Soft-Redirect gewertet, und `replace: true` hat den Zurück-Button
+    // zerstört. Ersetzt durch einen echten 301 in gatsby-node.js.
     const isMore = list.length < projects.length
     setHasMore(isMore)
   }, [list]) //eslint-disable-line
