@@ -103,7 +103,7 @@ const Wrapper = styled.footer`
   .logo > h1 {
     margin: 0;
     text-transform: uppercase;
-    letter-spacing: 2%;
+    letter-spacing: 0.02em;
     font-size: 1rem;
     gap: 12px;
   }
@@ -141,7 +141,7 @@ const Wrapper = styled.footer`
   }
   .info .title {
     text-transform: uppercase;
-    letter-spacing: 2%;
+    letter-spacing: 0.02em;
     color: var(--clr-grey-3);
   }
   .info.email {
