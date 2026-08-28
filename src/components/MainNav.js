@@ -50,6 +50,21 @@ const MainNav = ({ sideNav, toggleNav, closeMobileNav, currentArtistSlug }) => {
 
   const { offCanvas } = sideNav
 
+  // Seitenlinks. Sichtbar NUR im Drawer (unter 900px): dieselbe Komponente
+  // rendert auf dem Desktop die linke Spalte, dort stehen diese Links schon
+  // im Header. Steuerung ueber .page-nav im Wrapper weiter unten.
+  const pageNavigation = [
+    { id: "works", name: "Works", path: "/works/", external: false },
+    {
+      id: "teaching",
+      name: "Teaching",
+      path: "https://redges.ambulantdesign.nl",
+      external: true,
+    },
+    { id: "about", name: "About", path: "/about", external: false },
+    { id: "contact", name: "Contact", path: "/contact", external: false },
+  ]
+
   const keyWordNavigation = [
     {
       id: "all",
@@ -139,13 +154,37 @@ const MainNav = ({ sideNav, toggleNav, closeMobileNav, currentArtistSlug }) => {
               closeMobileNav={closeMobileNav}
             />
           </div>
+          <ul className="list-none ml-0 page-nav">
+            {pageNavigation.map(({ id, name, path, external }) => (
+              <li key={id}>
+                {external ? (
+                  <a
+                    className="bg-transparent block w-full"
+                    href={path}
+                    onClick={closeMobileNav}
+                  >
+                    {name}
+                  </a>
+                ) : (
+                  <Link
+                    className="bg-transparent block w-full"
+                    to={path}
+                    activeClassName="active"
+                    onClick={closeMobileNav}
+                  >
+                    {name}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
           <ul className="list-none ml-0 taxonomy-nav">
             <li>
               <ul className="list-none ml-0 keywords">
                 {keyWordNavigation.map(keyword => {
                   const { id, name, path } = keyword
                   return (
-                    <li key={id}>
+                    <li key={id} className={id === "all" ? "all-works" : ""}>
                       <Link
                         className="bg-transparent block w-full"
                         to={path}
@@ -276,7 +315,36 @@ const Wrapper = styled.aside`
   .form-field {
     display: none;
   }
+  /* Seitenlinks nur im Drawer — auf dem Desktop stehen sie im Header. */
+  .page-nav {
+    display: none;
+  }
   @media screen and (max-width: 900px) {
+    .page-nav {
+      display: block;
+      padding-top: var(--space-20);
+      margin-bottom: 0;
+    }
+
+    /* Keine eigene Farbe setzen: Normal-, Hover- und Active-Zustand kommen
+      aus den globalen Regeln in layout.css (a { color: inherit },
+      a:hover { --clr-grey-3 }, a.active { --clr-links }) — genau wie bei
+      der Desktop-Nav und den Keyword-Links. Rot ist ausschliesslich die
+      gerade aktive Seite. */
+
+    .page-nav li > a {
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      font-size: var(--font-lg);
+    }
+
+    /* "All" zeigt auf dasselbe Ziel wie WORKS oben. Im Drawer waeren das
+		zwei Links auf /works/ im Abstand von wenigen Zeilen — deshalb hier
+    ausgeblendet. Auf dem Desktop bleibt "All" als Filter-Reset stehen. */
+
+    .taxonomy-nav .keywords li.all-works {
+      display: none;
+    }
     position: fixed;
     display: flex;
     flex-direction: column;
