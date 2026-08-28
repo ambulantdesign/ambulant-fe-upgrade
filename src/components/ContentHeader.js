@@ -21,6 +21,9 @@ export const Wrapper = styled.section`
   h3 {
     color: var(--clr-grey-3);
   }
+  h2 + h3 {
+    padding-bottom: var(--space-1);
+  }
 `
 
 ContentHeader.propTypes = {

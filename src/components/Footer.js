@@ -172,7 +172,7 @@ const Wrapper = styled.footer`
 
     .logo {
       grid-column: span 12;
-      align-items: center;
+      justify-content: space-between;
     }
     .logo > h1 {
       flex-direction: row;
