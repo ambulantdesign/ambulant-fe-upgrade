@@ -223,7 +223,7 @@ const Wrapper = styled.header`
   }
   .header-nav .pages .page-nav li {
     text-transform: uppercase;
-    letter-spacing: 2%;
+    letter-spacing: 0.04em;
     margin-bottom: 0;
   }
   .form-field .search,
