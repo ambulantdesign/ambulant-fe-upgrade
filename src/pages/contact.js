@@ -25,13 +25,24 @@ import "leaflet/dist/leaflet.css"
 // Leere. Mit einem eigenen iconUrl entfaellt diese Pfaderkennung.
 // Die Datei liegt in static/ und wird von Gatsby unveraendert kopiert,
 // bekommt also keinen Hash.
-const studioMarker = new Icon({
-  iconUrl: "/marker-ambulant.svg",
-  iconSize: [34, 33],
-  // Die Logo-Form hat keine Spitze, der Ankerpunkt sitzt deshalb mittig.
-  iconAnchor: [17, 17],
-  popupAnchor: [0, -16],
-})
+// WICHTIG: nicht auf Modulebene instanziieren. Gatsby baut die Seiten in Node,
+// dort liegt `Icon` nicht als Konstruktor vor und der Build bricht ab mit
+// "TypeError: leaflet_src.Icon is not a constructor". Das Icon wird deshalb
+// erst beim Rendern im Browser erzeugt und dann wiederverwendet.
+let studioMarker = null
+const getStudioMarker = () => {
+  if (typeof window === "undefined") return undefined
+  if (!studioMarker) {
+    studioMarker = new Icon({
+      iconUrl: "/marker-ambulant.svg",
+      iconSize: [34, 33],
+      // Die Logo-Form hat keine Spitze, der Ankerpunkt sitzt deshalb mittig.
+      iconAnchor: [17, 17],
+      popupAnchor: [0, -16],
+    })
+  }
+  return studioMarker
+}
 
 const ContactPage = ({ data }) => {
   const {
@@ -51,13 +62,13 @@ const ContactPage = ({ data }) => {
             <MapContainer
               center={[52.36159, 4.858676]}
               zoom={16}
-              style={{ height: "440px" }}
+              style={{ height: "400px" }}
             >
               <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <Marker position={[52.36159, 4.858676]} icon={studioMarker}>
+              <Marker position={[52.36159, 4.858676]} icon={getStudioMarker()}>
                 <Popup minWidth="340">
                   <StaticImage
                     src="../assets/images/vis-card2.png"
