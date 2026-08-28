@@ -66,7 +66,10 @@ const ContactPage = ({ data }) => {
             >
               <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                // Die Tile Usage Policy nennt ausdruecklich diese eine URL.
+                // Die alten a/b/c-Subdomains gelten als ueberholt und koennen
+                // laut Policy "ohne Ankuendigung zurueckgezogen werden".
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <Marker position={[52.36159, 4.858676]} icon={getStudioMarker()}>
                 <Popup minWidth="340">
