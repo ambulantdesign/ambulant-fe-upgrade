@@ -1,6 +1,7 @@
 import * as React from "react"
 import { graphql } from "gatsby"
 import { StaticImage } from "gatsby-plugin-image"
+import { Icon } from "leaflet"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import { useHasMounted } from "../hooks/useHasMounted"
 import styled from "styled-components"
@@ -15,6 +16,22 @@ import ContactForm from "../components/ContactForm"
 import ContactOptions from "../components/ContactOptions"
 
 import "leaflet/dist/leaflet.css"
+
+// Eigener Marker in der Bildsprache des Studios (Logo-Form aus Footer.js).
+// Ersetzt Leaflets Standard-Icon, das in Gatsby ohnehin nicht laedt: Leaflet
+// ermittelt den Bildpfad zur Laufzeit aus dem background-image von
+// .leaflet-default-icon-path in leaflet.css — webpack schreibt diese URL beim
+// Build auf einen gehashten Pfad um, und Leaflets abgeleiteter Pfad geht ins
+// Leere. Mit einem eigenen iconUrl entfaellt diese Pfaderkennung.
+// Die Datei liegt in static/ und wird von Gatsby unveraendert kopiert,
+// bekommt also keinen Hash.
+const studioMarker = new Icon({
+  iconUrl: "/marker-ambulant.svg",
+  iconSize: [34, 33],
+  // Die Logo-Form hat keine Spitze, der Ankerpunkt sitzt deshalb mittig.
+  iconAnchor: [17, 17],
+  popupAnchor: [0, -16],
+})
 
 const ContactPage = ({ data }) => {
   const {
@@ -34,13 +51,13 @@ const ContactPage = ({ data }) => {
             <MapContainer
               center={[52.36159, 4.858676]}
               zoom={16}
-              style={{ height: "400px" }}
+              style={{ height: "440px" }}
             >
               <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <Marker position={[52.36159, 4.858676]}>
+              <Marker position={[52.36159, 4.858676]} icon={studioMarker}>
                 <Popup minWidth="340">
                   <StaticImage
                     src="../assets/images/vis-card2.png"
@@ -89,6 +106,18 @@ const ContactPage = ({ data }) => {
 }
 
 const Wrapper = styled.main`
+  /* Leaflet vergibt intern hohe z-index-Werte: Panes 400–700, Controls 800,
+	.leaflet-top/.leaflet-bottom sogar 1000. Der mobile Drawer liegt bei 199
+	und der Header bei 150 — die Karte wuerde sich also ueber beide legen.
+	isolation: isolate macht den Kartencontainer zu einem eigenen
+	Stapelkontext. Damit gelten Leaflets Werte nur noch innerhalb der Karte,
+	und die Karte selbst reiht sich als normales Element unter Drawer und
+   Header ein. Kein Hochzaehlen von z-index-Werten noetig. */
+  .leaflet-container {
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+  }
   .grid > .col-1 {
     grid-column: span 8;
   }
