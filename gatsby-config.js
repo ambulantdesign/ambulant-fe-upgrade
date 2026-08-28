@@ -113,16 +113,28 @@ module.exports = {
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
     {
-      // mergeSecurityHeaders muss aus bleiben: Das Plugin setzt sonst
-      // "Referrer-Policy: same-origin" (constants.js), und das ueberschreibt
-      // die Angabe in der _headers-Datei. Mit same-origin sendet der Browser
-      // bei Anfragen an fremde Hosts GAR KEINEN Referer — OpenStreetMap
-      // verlangt aber einen und blockt die Kartenkacheln dann mit
-      // "Access blocked / Referer is required by tile usage policy".
-      // Die Sicherheits-Header stehen jetzt vollstaendig in ./\_headers.
+      // ACHTUNG: Eine _headers-Datei im Projekt-Root wird NICHT gelesen.
+      // Netlify wertet ausschliesslich public/_headers aus, und diese Datei
+      // erzeugt das Plugin komplett neu aus den Optionen unten
+      // (build-headers-program.js: writeHeadersFile schreibt in den
+      // public-Ordner). Alle Header gehoeren deshalb hierher.
+      //
+      // mergeSecurityHeaders: false, weil der Standardsatz des Plugins
+      // "Referrer-Policy: same-origin" enthaelt (constants.js Zeile 23).
+      // Damit sendet der Browser an fremde Hosts gar keinen Referer —
+      // OpenStreetMap verlangt aber einen und blockt die Kartenkacheln
+      // mit "Access blocked / Referer is required by tile usage policy".
       resolve: `gatsby-plugin-netlify`,
       options: {
         mergeSecurityHeaders: false,
+        headers: {
+          "/*": [
+            "X-Frame-Options: DENY",
+            "X-XSS-Protection: 1; mode=block",
+            "X-Content-Type-Options: nosniff",
+            "Referrer-Policy: strict-origin-when-cross-origin",
+          ],
+        },
       },
     },
     `gatsby-plugin-postcss`,
