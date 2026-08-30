@@ -108,35 +108,36 @@ module.exports = {
       bing: `767B33DB3497D2F5C7FAD3E74DC065CF`,
     },
   },
+  // Sicherheits-Header.
+  //
+  // Netlify baut Gatsby ab Version 5.12 ueber "gatsby-adapter-netlify" und
+  // deaktiviert dabei "gatsby-plugin-netlify" vollstaendig (nachzulesen im
+  // Build-Log: 'warning Disabling plugin "gatsby-plugin-netlify"'). Header
+  // gehoeren deshalb nicht mehr in Plugin-Optionen, sondern hierher — das
+  // ist seit den Adaptern eine Kernoption von Gatsby.
+  //
+  // Gatsby setzt von sich aus BASE_HEADERS (x-xss-protection,
+  // x-content-type-options, x-frame-options und referrer-policy: same-origin,
+  // siehe gatsby/dist/utils/adapter/constants.js). "same-origin" verhindert,
+  // dass der Browser an fremde Hosts einen Referer schickt — OpenStreetMap
+  // verlangt aber einen und blockt sonst die Kartenkacheln auf /contact/.
+  //
+  // Schluessel zwingend KLEIN schreiben: Gatsby fuehrt die Header in einer Map
+  // mit dem exakten String als Schluessel zusammen. "Referrer-Policy" wuerde
+  // den Standard nicht ersetzen, sondern einen zweiten Header danebensetzen.
+  // Die uebrigen drei Header bleiben unveraendert und muessen nicht hier stehen.
+  headers: [
+    {
+      source: `/*`,
+      headers: [
+        { key: `referrer-policy`, value: `strict-origin-when-cross-origin` },
+      ],
+    },
+  ],
   plugins: [
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
-    {
-      // ACHTUNG: Eine _headers-Datei im Projekt-Root wird NICHT gelesen.
-      // Netlify wertet ausschliesslich public/_headers aus, und diese Datei
-      // erzeugt das Plugin komplett neu aus den Optionen unten
-      // (build-headers-program.js: writeHeadersFile schreibt in den
-      // public-Ordner). Alle Header gehoeren deshalb hierher.
-      //
-      // mergeSecurityHeaders: false, weil der Standardsatz des Plugins
-      // "Referrer-Policy: same-origin" enthaelt (constants.js Zeile 23).
-      // Damit sendet der Browser an fremde Hosts gar keinen Referer —
-      // OpenStreetMap verlangt aber einen und blockt die Kartenkacheln
-      // mit "Access blocked / Referer is required by tile usage policy".
-      resolve: `gatsby-plugin-netlify`,
-      options: {
-        mergeSecurityHeaders: false,
-        headers: {
-          "/*": [
-            "X-Frame-Options: DENY",
-            "X-XSS-Protection: 1; mode=block",
-            "X-Content-Type-Options: nosniff",
-            "Referrer-Policy: strict-origin-when-cross-origin",
-          ],
-        },
-      },
-    },
     `gatsby-plugin-postcss`,
     `gatsby-plugin-styled-components`,
     {
