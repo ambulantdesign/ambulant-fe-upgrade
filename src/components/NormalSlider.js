@@ -17,21 +17,22 @@ import "swiper/css/pagination"
 import "swiper/css/keyboard"
 
 const NormalSlider = ({ gallery }) => {
-  // Check if window is defined (so if in the browser or in node.js).
-  var isBrowser = typeof window !== "undefined"
-
-  const transitionStartHandler = () => {
-    if (isBrowser) {
-      const videos = document.querySelectorAll("video")
-      Array.prototype.forEach.call(videos, function (video) {
+  // Unter cssMode feuern transitionStart/transitionEnd nie (Swiper 8:
+  // core/transition/transitionStart.js -> `if (params.cssMode) return`).
+  // slideChange feuert dagegen weiter (onScroll -> updateActiveIndex).
+  // Video in der aktiven Slide abspielen, alle anderen pausieren.
+  const slideChangeHandler = swiper => {
+    swiper.slides.forEach((slide, i) => {
+      const video = slide.querySelector("video")
+      if (!video) return
+      if (i === swiper.activeIndex) {
+        video.muted = true
+        const p = video.play()
+        if (p && typeof p.catch === "function") p.catch(() => {})
+      } else {
         video.pause()
-      })
-    }
-  }
-  const transitionEndHandler = swiper => {
-    if (isBrowser && typeof window.autoPlayVideo === "function") {
-      window.autoPlayVideo(swiper.activeIndex)
-    }
+      }
+    })
   }
 
   return (
@@ -47,8 +48,7 @@ const NormalSlider = ({ gallery }) => {
           navigation
           keyboard
           pagination={{ clickable: true }}
-          onTransitionStart={() => transitionStartHandler()}
-          onTransitionEnd={swiper => transitionEndHandler(swiper)}
+          onSlideChange={slideChangeHandler}
         >
           {gallery.map((slide, index) => {
             const {
