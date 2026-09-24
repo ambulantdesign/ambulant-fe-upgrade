@@ -1,7 +1,6 @@
 import * as React from "react"
 import PropTypes from "prop-types"
 import { graphql, Link } from "gatsby"
-import { Script, withPrefix } from "gatsby"
 import styled from "styled-components"
 
 import Layout from "../components/Layout"
@@ -107,7 +106,6 @@ const WorkDetails = ({ data, pageContext }) => {
           {/* <!-- big Swiper (seperate component) --> */}
         </Wrapper>
       </Layout>
-      <Script src={withPrefix("/js/swiper-custom.js")} type="text/javascript" />
     </>
   )
 }
