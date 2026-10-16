@@ -76,7 +76,29 @@ const entryToRecord = ({ id, ...rest }) => {
   }
 }
 
-const settings = { attributesToSnippet: [`excerpt:20`] }
+// Index-Einstellungen, die gatsby-plugin-algolia bei jedem Build auf `main`
+// an Algolia uebertraegt. Muessen mit dem Algolia-Dashboard uebereinstimmen,
+// sonst ueberschreibt der Build die Dashboard-Werte.
+const settings = {
+  attributesToSnippet: [`excerpt:20`],
+  // Jahreszahlen exakt: "2010" findet nicht mehr 2011, 2000 usw.
+  // Woerter bleiben fehlertolerant. (Im Dashboard seit 16.10.2026 gesetzt.)
+  allowTyposOnNumericTokens: false,
+  // Spiegel der Dashboard-Liste (Stand 16.10.2026). Reihenfolge = Gewichtung.
+  // Ohne unordered() = "ordered" (Position im Feld zaehlt).
+  searchableAttributes: [
+    `title`,
+    `unordered(content)`,
+    `meta.year`,
+    `unordered(meta.city)`,
+    `unordered(meta.info)`,
+    `unordered(meta.medium)`,
+    `unordered(meta.publisher)`,
+    `unordered(meta.technical_details)`,
+    `unordered(artist.fullname)`,
+    `unordered(artist.lastname)`,
+  ],
+}
 
 const queries = [
   {
